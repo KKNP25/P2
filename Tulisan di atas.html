@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CEO Sariyono</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    #judul {
+      font-size: 24px;
+      width: 100%;
+      margin-bottom: 5px;
+      padding: 10px;
+      margin-top: -10px;
+    }
+
+    #judul-align {
+      margin-top: 5px;
+      width: 100px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .image-box {
+      border: 2px dashed #aaa;
+      position: relative;
+      height: 350px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      background: #f9f9f9;
+      padding-top: 10px;
+    }
+
+    .drop-zone {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .drop-zone input {
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .drop-zone img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .caption-input {
+      border: none;
+      padding: 5px;
+      resize: none;
+      font-size: 14px;
+      min-height: 40px;
+      background: #fff;
+    }
+
+    .align-select {
+      width: 100%;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      z-index: 3;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      font-size: 14px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .image-box:hover .delete-btn {
+      display: block;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <input id="judul" type="text" placeholder="Tulis Judul Di Sini..." />
+  <select id="judul-align" class="align-select">
+    <option value="left" selected>Kiri</option>
+    <option value="center">Tengah</option>
+    <option value="right">Kanan</option>
+  </select>
+
+  <div class="grid-container">
+    <!-- Repeated image box x4 -->
+    <div class="image-box">
+      <button class="delete-btn">×</button>
+      <select class="align-select">
+        <option value="left" selected>Kiri</option>
+        <option value="center">Tengah</option>
+        <option value="right">Kanan</option>
+      </select>
+      <textarea class="caption-input" placeholder="Keterangan gambar..."></textarea>
+      <div class="drop-zone">
+        <input type="file" accept="image/*" />
+      </div>
+    </div>
+    <div class="image-box">
+      <button class="delete-btn">×</button>
+      <select class="align-select">
+        <option value="left" selected>Kiri</option>
+        <option value="center">Tengah</option>
+        <option value="right">Kanan</option>
+      </select>
+      <textarea class="caption-input" placeholder="Keterangan gambar..."></textarea>
+      <div class="drop-zone">
+        <input type="file" accept="image/*" />
+      </div>
+    </div>
+    <div class="image-box">
+      <button class="delete-btn">×</button>
+      <select class="align-select">
+        <option value="left" selected>Kiri</option>
+        <option value="center">Tengah</option>
+        <option value="right">Kanan</option>
+      </select>
+      <textarea class="caption-input" placeholder="Keterangan gambar..."></textarea>
+      <div class="drop-zone">
+        <input type="file" accept="image/*" />
+      </div>
+    </div>
+    <div class="image-box">
+      <button class="delete-btn">×</button>
+      <select class="align-select">
+        <option value="left" selected>Kiri</option>
+        <option value="center">Tengah</option>
+        <option value="right">Kanan</option>
+      </select>
+      <textarea class="caption-input" placeholder="Keterangan gambar..."></textarea>
+      <div class="drop-zone">
+        <input type="file" accept="image/*" />
+      </div>
+    </div>
+  </div>
+
+  <select id="paper-size" class="align-select">
+    <option value="a4">A4</option>
+    <option value="f4">F4</option>
+  </select>
+
+  <select id="caption-position" class="align-select">
+    <option value="top">Tulisan Keterangan Gambar (Atas)</option>
+    <option value="bottom" selected>Tulisan Keterangan Gambar (Bawah)</option>
+  </select>
+
+  <select id="orientation" class="align-select">
+    <option value="portrait" selected>Portrait</option>
+    <option value="landscape">Landscape</option>
+  </select>
+  
+
+  <button onclick="downloadPDF()">Export ke PDF</button>
+  <button onclick="previewPDF()">Preview PDF</button>
+  <iframe id="pdf-preview" style="width:100%;height:500px;margin-top:20px;border:1px solid #ccc;"></iframe>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  const inputs = document.querySelectorAll(".drop-zone input[type='file']");
+  const zones = document.querySelectorAll(".drop-zone");
+  const deleteButtons = document.querySelectorAll(".delete-btn");
+  const captions = document.querySelectorAll(".caption-input");
+
+  const titleInput = document.getElementById("judul");
+  const titleAlign = document.getElementById("judul-align");
+
+  // Atur rata judul
+  titleAlign.addEventListener("change", () => {
+    titleInput.style.textAlign = titleAlign.value;
+  });
+
+  // Atur gambar dan caption
+  inputs.forEach((input, index) => {
+    input.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const zone = zones[index];
+        let img = zone.querySelector("img");
+        if (!img) {
+          img = document.createElement("img");
+          zone.appendChild(img);
+        }
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  deleteButtons.forEach((btn, index) => {
+    btn.addEventListener("click", () => {
+      const zone = zones[index];
+      const img = zone.querySelector("img");
+      const input = zone.querySelector("input");
+      const caption = captions[index];
+
+      if (img) img.remove();
+      if (input) input.value = "";
+      if (caption) caption.value = "";
+    });
+  });
+
+  // Atur rata caption
+  const captionAlignSelects = document.querySelectorAll(".image-box .align-select");
+  captionAlignSelects.forEach((select, index) => {
+    select.addEventListener("change", () => {
+      const caption = captions[index];
+      caption.style.textAlign = select.value;
+    });
+  });
+
+// Memperbaiki preview dengan penanganan error lebih baik
+async function downloadPDF(preview = false) {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({
+    orientation: document.getElementById("orientation").value,
+    unit: "mm",
+    format: document.getElementById("paper-size").value === "f4" ? [210, 330] : "a4"
+  });
+
+  const container = document.querySelector(".grid-container");
+  const boxes = container.querySelectorAll(".image-box");
+
+  const captionGlobalPosition = document.getElementById("caption-position").value;
+  const boxesPerRow = 2;
+  const pageW = pdf.internal.pageSize.getWidth();
+  const boxW = (pageW - 40) / 2;
+  const boxH = 70;
+  const margin = 10;
+  const captionOffset = 6;
+
+  let x = 20;
+  let y = 30;
+
+  // Judul
+  const title = document.getElementById("judul").value;
+  const titleAlign = document.getElementById("judul-align").value;
+  let titleX = titleAlign === "center" ? pageW / 2 : (titleAlign === "right" ? pageW - 20 : 20);
+  pdf.setFontSize(16);
+  pdf.text(title, titleX, 20, { align: titleAlign });
+
+  for (let i = 0; i < boxes.length; i++) {
+    const box = boxes[i];
+    const img = box.querySelector("img");
+    const caption = box.querySelector(".caption-input").value;
+    const align = box.querySelector(".align-select").value;
+
+    if (!img) continue;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+
+    const alignX = align === "center" ? x + boxW / 2 : (align === "right" ? x + boxW : x);
+
+    if (captionGlobalPosition === "top") {
+      pdf.setFontSize(12);
+      pdf.text(caption, alignX, y, { align });
+      pdf.addImage(imgData, "JPEG", x, y + captionOffset, boxW, boxH);
+    } else {
+      pdf.addImage(imgData, "JPEG", x, y, boxW, boxH);
+      pdf.setFontSize(12);
+      pdf.text(caption, alignX, y + boxH + captionOffset, { align });
+    }
+
+    if ((i + 1) % boxesPerRow === 0) {
+      x = 20;
+      y += boxH + 20;
+    } else {
+      x += boxW + margin;
+    }
+  }
+
+  if (preview) {
+    document.getElementById("pdf-preview").src = pdf.output("bloburl");
+  } else {
+    pdf.save("layout-gambar.pdf");
+  }
+}
+
+function previewPDF() {
+  downloadPDF(true);
+}
+
+// Memperbaiki preview dengan penanganan error lebih baik
+async function previewPDF() {
+  try {
+    const { jsPDF } = window.jspdf;
+    const paper = document.getElementById("paper-size").value;
+    const orientation = document.getElementById("orientation").value;
+    const captionPosition = document.getElementById("caption-position").value;
+
+    const sizeMap = {
+      a4: [210, 297],
+      f4: [210, 330]
+    };
+
+    let [pageW, pageH] = sizeMap[paper.toLowerCase()] || sizeMap.a4;
+    if (orientation === "landscape") [pageW, pageH] = [pageH, pageW];
+
+    const pdf = new jsPDF({
+      orientation: orientation,
+      unit: "mm",
+      format: [pageW, pageH]
+    });
+
+    const title = titleInput.value || "Judul";
+    const titleAlignVal = titleAlign.value;
+
+    const titleFontSize = 16;
+    pdf.setFontSize(titleFontSize);
+
+    let titleX = 10;
+    if (titleAlignVal === "center") titleX = pageW / 2;
+    else if (titleAlignVal === "right") titleX = pageW - 10;
+
+    pdf.text(title, titleX, 20, { align: titleAlignVal });
+
+    const boxesPerRow = 2;
+    const boxW = (pageW - 40) / 2; // Lebar gambar
+    const boxH = 70;
+    const margin = 10;
+    const captionOffset = 6;
+
+    const boxes = document.querySelectorAll(".image-box");
+
+    const totalRowWidth = boxesPerRow * boxW + (boxesPerRow - 1) * margin;
+    const xStart = (pageW - totalRowWidth) / 2;
+
+    let x = xStart;
+    let y = 30;
+
+    for (let i = 0; i < boxes.length; i++) {
+      const box = boxes[i];
+      const img = box.querySelector("img");
+      const caption = box.querySelector(".caption-input").value;
+      const align = box.querySelector(".align-select").value;
+
+      if (!img) continue;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+
+      let alignX = x + boxW / 2;
+      if (align === "left") alignX = x;
+      else if (align === "right") alignX = x + boxW;
+
+      if (captionPosition === "top") {
+        pdf.setFontSize(12);
+        pdf.text(caption, alignX, y, { align: align });
+        pdf.addImage(imgData, "JPEG", x, y + captionOffset, boxW, boxH);
+      } else {
+        pdf.addImage(imgData, "JPEG", x, y, boxW, boxH);
+        pdf.setFontSize(12);
+        pdf.text(caption, alignX, y + boxH + captionOffset, { align: align });
+      }
+
+      if ((i + 1) % boxesPerRow === 0) {
+        x = xStart;
+        y += boxH + captionOffset + 10;
+        if (captionPosition === "top") y += captionOffset;
+      } else {
+        x += boxW + margin;
+      }
+    }
+
+    // Preview ke iframe
+    const blob = pdf.output("blob");
+    const url = URL.createObjectURL(blob);
+    document.getElementById("pdf-preview").src = url;
+  } catch (error) {
+    console.error("Error generating preview PDF:", error);
+  }
+}
+
+</script>
+</body>
+</html>
