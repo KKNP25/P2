@@ -269,13 +269,13 @@ async function downloadPDF(preview = false) {
   const margin = 10;
   const captionOffset = 6;
 
-  let x = 20;
+  let x = 15;
   let y = 30;
 
   // Judul
   const title = document.getElementById("judul").value;
   const titleAlign = document.getElementById("judul-align").value;
-  let titleX = titleAlign === "center" ? pageW / 2 : (titleAlign === "right" ? pageW - 20 : 20);
+  let titleX = titleAlign === "center" ? pageW / 2 : (titleAlign === "right" ? pageW - 20 : 15);
   pdf.setFontSize(16);
   pdf.text(title, titleX, 20, { align: titleAlign });
 
@@ -293,7 +293,6 @@ async function downloadPDF(preview = false) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
     const imgData = canvas.toDataURL("image/jpeg", 1.0);
-
     const alignX = align === "center" ? x + boxW / 2 : (align === "right" ? x + boxW : x);
 
     if (captionGlobalPosition === "top") {
@@ -307,7 +306,7 @@ async function downloadPDF(preview = false) {
     }
 
     if ((i + 1) % boxesPerRow === 0) {
-      x = 20;
+      x = 15;
       y += boxH + 20;
     } else {
       x += boxW + margin;
@@ -353,7 +352,7 @@ async function previewPDF() {
     const titleFontSize = 16;
     pdf.setFontSize(titleFontSize);
 
-    let titleX = 10;
+    let titleX = 15;
     if (titleAlignVal === "center") titleX = pageW / 2;
     else if (titleAlignVal === "right") titleX = pageW - 10;
 
