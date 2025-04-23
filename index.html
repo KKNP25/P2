@@ -34,20 +34,16 @@
     }
 
     .image-box {
-  border: 2px dashed #aaaaaabe;
-  position: relative;
-  height: auto; /* agar tinggi fleksibel */
-  aspect-ratio: 4 / 3; /* menjaga proporsi, bisa diganti misal 16/9 */
-  width: 100%;
-  max-width: 500px; /* maksimal ukuran di layar besar */
-  margin: 0 auto; /* biar di tengah */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background: #bbd3dd;
-  padding-top: 10px;
-  box-sizing: border-box; /* penting agar padding tidak menambah ukuran */
-}
+      border: 2px dashed #aaaaaabe;
+      position: relative;
+      height: 200px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      background: #bbd3dd;
+      padding-top: 10px;
+    }
 
     .drop-zone {
       flex: 1;
@@ -127,7 +123,7 @@
   </style>
 </head>
 <body>
-  <img src="image/logoatr.png" alt="Logo ATR" width="100" style="position:absolute; top:10px; left:10px;" />
+  <img src="image/logoatr.png" alt="Logo ATR" width="100" style="position:absolute; top:10px; right:10px;" />
   <h2 id=>KONDISI PENGGUNAAN TANAH LOKASI YANG DIMOHON</h2>
   <input id="judul" type="text" placeholder="Tulis Judul Disini...." />
   <select id="judul-align" class="align-select">
