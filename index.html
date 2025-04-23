@@ -34,16 +34,20 @@
     }
 
     .image-box {
-      border: 2px dashed #aaaaaabe;
-      position: relative;
-      height: 200px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      background: #bbd3dd;
-      padding-top: 10px;
-    }
+  border: 2px dashed #aaaaaabe;
+  position: relative;
+  height: auto; /* agar tinggi fleksibel */
+  aspect-ratio: 4 / 3; /* menjaga proporsi, bisa diganti misal 16/9 */
+  width: 100%;
+  max-width: 500px; /* maksimal ukuran di layar besar */
+  margin: 0 auto; /* biar di tengah */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: #bbd3dd;
+  padding-top: 10px;
+  box-sizing: border-box; /* penting agar padding tidak menambah ukuran */
+}
 
     .drop-zone {
       flex: 1;
